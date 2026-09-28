@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whispering Pines Anthology | Stories by A. Bugarin</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        homestead: {
+                            900: '#1c1410',
+                            800: '#2c2018',
+                            700: '#3f2e22',
+                            600: '#5a4231',
+                            500: '#78350f',
+                            400: '#9a3412',
+                            accent: '#c2410c',
+                            gold: '#d97706',
+                            cream: '#fef3c7',
+                            parchment: '#fdf8f0',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        heading: ['Cinzel', 'serif'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes hearthGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.03); }
+        }
+        .hearth-glow { animation: hearthGlow 6s ease-in-out infinite; }
+        .parchment-bg { background-color: #fdf8f0; background-image: radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.03) 0%, rgba(0,0,0,0.06) 100%); }
+    </style>
+</head>
+<body class="h-full bg-homestead-900 text-homestead-cream font-serif antialiased flex flex-col selection:bg-homestead-500 selection:text-white">
+
+    <!-- Ambient Fireplace Glow Header Effect -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[250px] bg-gradient-to-b from-homestead-400/20 via-homestead-gold/10 to-transparent rounded-full blur-3xl pointer-events-none hearth-glow z-0"></div>
+
+    <!-- Top Navigation / Brand Bar -->
+    <header class="relative z-10 border-b border-homestead-700 bg-homestead-800/80 backdrop-blur-md sticky top-0">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('home')">
+                <div class="w-10 h-10 rounded-full bg-homestead-500/30 border border-homestead-gold/50 flex items-center justify-center text-homestead-gold shadow-lg shadow-homestead-accent/20">
+                    <i data-lucide="flame" class="w-5 h-5 text-homestead-gold"></i>
+                </div>
+                <div>
+                    <h1 class="font-heading text-xl sm:text-2xl font-bold tracking-wider text-homestead-cream">Whispering Pines</h1>
+                    <p class="text-xs text-amber-200/70 tracking-widest uppercase font-sans">Anthology by A. Bugarin</p>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="flex items-center flex-wrap justify-center gap-2 sm:space-x-3">
+                <a href="https://www.amazon.com/hz/wishlist/ls/2TSLJXIJE7SIZ?ref_=wl_share" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-2 px-3 py-1.5 rounded-md bg-homestead-700 hover:bg-homestead-600 text-xs font-sans text-amber-200 border border-homestead-600 transition shadow-sm">
+                    <i data-lucide="gift" class="w-4 h-4 text-homestead-gold"></i>
+                    <span>Amazon Wish List</span>
+                </a>
+
+                <button onclick="toggleAmbience()" id="audioBtn" class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-homestead-700 hover:bg-homestead-600 text-xs text-amber-200 border border-homestead-600 transition shadow-sm">
+                    <i data-lucide="volume-2" class="w-4 h-4 text-homestead-gold" id="audioIcon"></i>
+                    <span id="audioText" class="font-sans">Hearth Fire: Off</span>
+                </button>
+
+                <button onclick="openModal()" class="flex items-center space-x-2 px-4 py-2 rounded-md bg-homestead-accent hover:bg-homestead-400 text-white text-sm font-sans font-medium transition shadow-md shadow-homestead-accent/20">
+                    <i data-lucide="feather" class="w-4 h-4"></i>
+                    <span>Publish Story</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="relative z-10 flex-grow max-w-6xl w-full mx-auto px-4 py-8">
+        
+        <!-- HOME VIEW -->
+        <div id="homeView">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <h2 class="font-heading text-3xl sm:text-4xl font-bold text-homestead-cream mb-3">Stories by the Firelight</h2>
+                <p class="text-amber-100/80 text-lg leading-relaxed font-serif italic">
+                    Step inside the warm cabin. Explore a collection of eerie midnight legends, quiet local folklore, heartfelt poetry, and whimsical tales.
+                </p>
+                <div class="w-24 h-0.5 bg-homestead-gold/40 mx-auto mt-6"></div>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-8 bg-homestead-800/60 p-4 rounded-lg border border-homestead-700 backdrop-blur-sm">
+                <div class="flex flex-wrap gap-2 w-full md:w-auto" id="categoryTabs">
+                    <button onclick="filterCategory('all')" class="category-btn px-4 py-1.5 rounded-full text-xs font-sans tracking-wide transition bg-homestead-accent text-white shadow-sm" data-category="all">All Tales</button>
+                    <button onclick="filterCategory('stories')" class="category-btn px-4 py-1.5 rounded-full text-xs font-sans tracking-wide transition bg-homestead-700 hover:bg-homestead-600 text-amber-100/90" data-category="stories">Stories</button>
+                    <button onclick="filterCategory('blog')" class="category-btn px-4 py-1.5 rounded-full text-xs font-sans tracking-wide transition bg-homestead-700 hover:bg-homestead-600 text-amber-100/90" data-category="blog">Blog</button>
+                    <button onclick="filterCategory('creepystories')" class="category-btn px-4 py-1.5 rounded-full text-xs font-sans tracking-wide transition bg-homestead-700 hover:bg-homestead-600 text-amber-100/90" data-category="creepystories">Creepy Stories</button>
+                    <button onclick="filterCategory('folklore')" class="category-btn px-4 py-1.5 rounded-full text-xs font-sans tracking-wide transition bg-homestead-700 hover:bg-homestead-600 text-amber-100/90" data-category="folklore">Local Folklore</button>
+                </div>
+
+                <div class="flex items-center gap-2 w-full md:w-auto">
+                    <div class="relative flex-grow md:w-64">
+                        <i data-lucide="search" class="w-4 h-4 text-amber-300/50 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Search stories..." class="w-full bg-homestead-900 border border-homestead-700 rounded-md pl-9 pr-4 py-1.5 text-sm text-homestead-cream placeholder-amber-200/40 focus:outline-none focus:border-homestead-gold">
+                    </div>
+                    <select id="sortSelect" onchange="handleSort()" class="bg-homestead-900 border border-homestead-700 rounded-md px-3 py-1.5 text-xs font-sans text-amber-200 focus:outline-none focus:border-homestead-gold">
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="title">Title (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Stories Grid -->
+            <div id="storiesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <!-- READER VIEW -->
+        <div id="readerView" class="hidden max-w-3xl mx-auto">
+            <button onclick="switchView('home')" class="flex items-center space-x-2 text-homestead-gold hover:text-amber-300 text-sm font-sans mb-6 transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span>Back to Library Hearth</span>
+            </button>
+
+            <div id="readerContainer" class="bg-homestead-parchment text-homestead-900 rounded-lg p-8 sm:p-12 shadow-2xl relative border-4 border-homestead-600">
+                <div class="flex flex-wrap items-center justify-between gap-3 pb-6 mb-8 border-b border-stone-300 text-xs text-stone-600 font-sans">
+                    <div class="flex items-center space-x-3">
+                        <span id="readerCategory" class="px-3 py-1 rounded bg-amber-800 text-amber-100 font-semibold uppercase tracking-wider text-[10px]"></span>
+                        <span id="readerDate"></span>
+                    </div>
+                    <div class="flex items-center flex-wrap gap-3">
+                        <button onclick="deleteCurrentStory()" class="text-red-700 hover:text-red-900 font-bold flex items-center space-x-1 bg-red-100 px-2.5 py-1 rounded border border-red-300 transition">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                            <span>Delete Tale</span>
+                        </button>
+                        <div class="flex items-center space-x-3 border-l border-stone-300 pl-3">
+                            <button onclick="adjustFontSize(1)" class="hover:text-black font-bold">A+</button>
+                            <button onclick="adjustFontSize(-1)" class="hover:text-black font-bold">A-</button>
+                            <button onclick="toggleReaderTheme()" class="flex items-center space-x-1 hover:text-black">
+                                <i data-lucide="moon" class="w-3.5 h-3.5"></i>
+                                <span id="themeToggleText">Dark Room</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 id="readerTitle" class="font-heading text-3xl sm:text-4xl font-bold text-stone-900 mb-2"></h2>
+                <p id="readerAuthor" class="text-stone-600 italic text-sm mb-8"></p>
+
+                <!-- Full Unabridged Story Body Container -->
+                <div id="readerContent" class="font-serif text-lg leading-relaxed space-y-6"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- PUBLISH MODAL -->
+    <div id="storyModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-homestead-800 border border-homestead-700 rounded-lg max-w-lg w-full p-6 shadow-2xl relative">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-homestead-700">
+                <h3 class="font-heading text-xl font-bold text-homestead-cream flex items-center space-x-2">
+                    <i data-lucide="feather" class="w-5 h-5 text-homestead-gold"></i>
+                    <span>Publish New Story</span>
+                </h3>
+                <button onclick="closeModal()" class="text-amber-200/60 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form id="storyForm" onsubmit="handlePublish(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-sans uppercase tracking-wider text-amber-200/70 mb-1">Story Title</label>
+                    <input type="text" id="formTitle" required class="w-full bg-homestead-900 border border-homestead-700 rounded-md px-3 py-2 text-sm text-homestead-cream focus:outline-none focus:border-homestead-gold" placeholder="e.g., The Whispering Pines">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-sans uppercase tracking-wider text-amber-200/70 mb-1">Author / Pen Name</label>
+                        <input type="text" id="formAuthor" value="A. Bugarin" required class="w-full bg-homestead-900 border border-homestead-700 rounded-md px-3 py-2 text-sm text-homestead-cream focus:outline-none focus:border-homestead-gold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-sans uppercase tracking-wider text-amber-200/70 mb-1">Genre / Section</label>
+                        <select id="formCategory" class="w-full bg-homestead-900 border border-homestead-700 rounded-md px-3 py-2 text-sm text-amber-200 focus:outline-none focus:border-homestead-gold">
+                            <option value="stories">Stories</option>
+                            <option value="blog">Blog</option>
+                            <option value="creepystories">Creepy Stories</option>
+                            <option value="folklore">Local Folklore</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-sans uppercase tracking-wider text-amber-200/70 mb-1">Content</label>
+                    <textarea id="formContent" rows="7" required class="w-full bg-homestead-900 border border-homestead-700 rounded-md p-3 text-sm text-homestead-cream focus:outline-none focus:border-homestead-gold font-serif" placeholder="Write your tale or blog post here..."></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-md bg-homestead-700 hover:bg-homestead-600 text-xs font-sans text-amber-200 transition">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-md bg-homestead-accent hover:bg-homestead-400 text-xs font-sans font-medium text-white transition shadow-md">Publish to Hearth</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-homestead-700 mt-auto bg-homestead-900 py-6 text-center text-xs text-amber-200/50 font-sans">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>&copy; 2026 Whispering Pines Anthology. All stories authored by A. Bugarin.</p>
+            <div class="flex items-center space-x-1.5 text-amber-200/70 bg-homestead-800/80 px-3 py-1 rounded-full border border-homestead-700">
+                <i data-lucide="eye" class="w-3.5 h-3.5 text-homestead-gold"></i>
+                <span>Hearth Visitors: <strong id="visitorCount" class="text-homestead-cream">1</strong></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let stories = JSON.parse(localStorage.getItem('whispering_pines_stories')) || [];
+        let currentCategory = 'all';
+        let currentFontSize = 18;
+        let isDarkModeReader = false;
+        let activeStoryId = null;
+        let audioCtx = null;
+        let isAudioPlaying = false;
+
+        function initTrafficCounter() {
+            let visits = parseInt(localStorage.getItem('whispering_pines_visits') || '0', 10);
+            visits += 1;
+            localStorage.setItem('whispering_pines_visits', visits);
+            const counterElem = document.getElementById('visitorCount');
+            if (counterElem) {
+                counterElem.textContent = visits.toLocaleString();
+            }
+        }
+
+        lucide.createIcons();
+        initTrafficCounter();
+
+        function renderStories() {
+            const grid = document.getElementById('storiesGrid');
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const sortBy = document.getElementById('sortSelect').value;
+
+            let filtered = stories.filter(s => {
+                const matchesCat = currentCategory === 'all' || s.category === currentCategory;
+                const matchesSearch = s.title.toLowerCase().includes(searchQuery) || s.content.toLowerCase().includes(searchQuery);
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.sort((a, b) => {
+                if (sortBy === 'newest') return new Date(b.date) - new Date(a.date);
+                if (sortBy === 'oldest') return new Date(a.date) - new Date(b.date);
+                if (sortBy === 'title') return a.title.localeCompare(b.title);
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-16 text-amber-200/50">
+                        <i data-lucide="book-open" class="w-12 h-12 mx-auto mb-3 opacity-40"></i>
+                        <p class="font-serif italic text-lg">No tales found gathering by the hearth yet. Click "Publish Story" above to add yours!</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            grid.innerHTML = '';
+            filtered.forEach(story => {
+                const card = document.createElement('div');
+                card.className = "bg-homestead-800/80 border border-homestead-700 rounded-lg p-6 hover:border-homestead-gold transition duration-300 cursor-pointer flex flex-col justify-between group shadow-lg";
+                card.onclick = () => openStory(story.id);
+
+                const innerDiv = document.createElement('div');
+                
+                const topMeta = document.createElement('div');
+                topMeta.className = "flex items-center justify-between mb-3";
+                
+                const badge = document.createElement('span');
+                badge.className = "text-[10px] font-sans font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded bg-homestead-700 text-amber-200";
+                badge.textContent = formatCategoryName(story.category);
+                
+                const dateSpan = document.createElement('span');
+                dateSpan.className = "text-xs text-amber-200/40 font-sans";
+                dateSpan.textContent = story.date;
+                
+                topMeta.appendChild(badge);
+                topMeta.appendChild(dateSpan);
+
+                const h3 = document.createElement('h3');
+                h3.className = "font-heading text-xl font-bold text-homestead-cream group-hover:text-amber-300 transition mb-2";
+                h3.textContent = story.title;
+
+                const pExcerpt = document.createElement('p');
+                pExcerpt.className = "text-amber-100/70 text-sm font-serif line-clamp-3 mb-4";
+                pExcerpt.textContent = story.excerpt || story.content;
+
+                innerDiv.appendChild(topMeta);
+                innerDiv.appendChild(h3);
+                innerDiv.appendChild(pExcerpt);
+
+                const footerDiv = document.createElement('div');
+                footerDiv.className = "flex items-center justify-between pt-4 border-t border-homestead-700/60 text-xs text-amber-200/60 font-sans";
+                
+                const authorSpan = document.createElement('span');
+                authorSpan.textContent = `By ${story.author}`;
+
+                const readMore = document.createElement('span');
+                readMore.className = "flex items-center space-x-1 text-homestead-gold group-hover:translate-x-1 transition";
+                readMore.innerHTML = `<span>Read Tale</span><i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>`;
+
+                footerDiv.appendChild(authorSpan);
+                footerDiv.appendChild(readMore);
+
+                card.appendChild(innerDiv);
+                card.appendChild(footerDiv);
+                grid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function formatCategoryName(cat) {
+            const map = {
+                'stories': 'Stories',
+                'blog': 'Blog',
+                'creepystories': 'Creepy Stories',
+                'folklore': 'Local Folklore'
+            };
+            return map[cat] || cat;
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.dataset.category === cat) {
+                    btn.className = "category-btn px-4 py-1.5 rounded-full text-xs font-sans tracking-wide transition bg-homestead-accent text-white shadow-sm";
+                } else {
+                    btn.className = "category-btn px-4 py-1.5 rounded-full text-xs font-sans tracking-wide transition bg-homestead-700 hover:bg-homestead-600 text-amber-100/90";
+                }
+            });
+            renderStories();
+        }
+
+        function handleSearch() {
+            renderStories();
+        }
+
+        function handleSort() {
+            renderStories();
+        }
+
+        function switchView(view) {
+            const home = document.getElementById('homeView');
+            const reader = document.getElementById('readerView');
+            if (view === 'home') {
+                home.classList.remove('hidden');
+                reader.classList.add('hidden');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            } else {
+                home.classList.add('hidden');
+                reader.classList.remove('hidden');
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
+
+        function openStory(id) {
+            const story = stories.find(s => s.id === id);
+            if (!story) return;
+
+            activeStoryId = id;
+            document.getElementById('readerCategory').textContent = formatCategoryName(story.category);
+            document.getElementById('readerDate').textContent = story.date;
+            document.getElementById('readerTitle').textContent = story.title;
+            document.getElementById('readerAuthor').textContent = `Written by ${story.author}`;
+            
+            const contentDiv = document.getElementById('readerContent');
+            contentDiv.innerHTML = '';
+
+            const rawContent = story.content || '';
+            const paragraphs = rawContent.split(/\r?\n\s*\r?\n/);
+
+            paragraphs.forEach(paraText => {
+                const p = document.createElement('p');
+                p.className = "mb-6 leading-relaxed";
+                
+                const lines = paraText.split(/\r?\n/);
+                lines.forEach((line, idx) => {
+                    p.append(line);
+                    if (idx < lines.length - 1) {
+                        p.appendChild(document.createElement('br'));
+                    }
+                });
+
+                contentDiv.appendChild(p);
+            });
+
+            currentFontSize = 18;
+            contentDiv.style.fontSize = currentFontSize + 'px';
+            switchView('reader');
+            lucide.createIcons();
+        }
+
+        function deleteCurrentStory() {
+            if (!activeStoryId) return;
+            if (confirm("Are you sure you want to delete this story?")) {
+                stories = stories.filter(s => s.id !== activeStoryId);
+                localStorage.setItem('whispering_pines_stories', JSON.stringify(stories));
+                activeStoryId = null;
+                switchView('home');
+                renderStories();
+            }
+        }
+
+        function adjustFontSize(delta) {
+            currentFontSize = Math.max(14, Math.min(26, currentFontSize + (delta * 2)));
+            document.getElementById('readerContent').style.fontSize = currentFontSize + 'px';
+        }
+
+        function toggleReaderTheme() {
+            isDarkModeReader = !isDarkModeReader;
+            const container = document.getElementById('readerContainer');
+            const textElem = document.getElementById('themeToggleText');
+            if (isDarkModeReader) {
+                container.style.backgroundColor = '#1c1410';
+                container.style.color = '#fef3c7';
+                container.style.borderColor = '#5a4231';
+                textElem.textContent = "Parchment";
+            } else {
+                container.style.backgroundColor = '#fdf8f0';
+                container.style.color = '#1c1410';
+                container.style.borderColor = '#5a4231';
+                textElem.textContent = "Dark Room";
+            }
+        }
+
+        function openModal() {
+            document.getElementById('storyModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('storyModal').classList.add('hidden');
+        }
+
+        function handlePublish(e) {
+            e.preventDefault();
+            const title = document.getElementById('formTitle').value;
+            const author = document.getElementById('formAuthor').value;
+            const category = document.getElementById('formCategory').value;
+            const content = document.getElementById('formContent').value;
+
+            const newStory = {
+                id: Date.now().toString(),
+                title,
+                author,
+                category,
+                date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                excerpt: content.length > 120 ? content.substring(0, 120) + '...' : content,
+                content
+            };
+
+            stories.unshift(newStory);
+            localStorage.setItem('whispering_pines_stories', JSON.stringify(stories));
+            document.getElementById('storyForm').reset();
+            closeModal();
+            renderStories();
+        }
+
+        function toggleAmbience() {
+            const btnText = document.getElementById('audioText');
+            const audioIcon = document.getElementById('audioIcon');
+            if (!isAudioPlaying) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(65, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    window._hearthOsc = osc;
+                    isAudioPlaying = true;
+                    btnText.textContent = "Hearth Fire: On";
+                    audioIcon.classList.add('text-homestead-accent');
+                } catch(err) {
+                    console.error("Audio error:", err);
+                }
+            } else {
+                if (window._hearthOsc) { window._hearthOsc.stop(); }
+                if (audioCtx) { audioCtx.close(); }
+                isAudioPlaying = false;
+                btnText.textContent = "Hearth Fire: Off";
+                audioIcon.classList.remove('text-homestead-accent');
+            }
+        }
+
+        renderStories();
+    </script>
+</body>
+</html>
